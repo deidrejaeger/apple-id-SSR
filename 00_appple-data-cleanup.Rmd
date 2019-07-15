@@ -1,0 +1,79 @@
+---
+title: "00_apple-data-cleanup"
+author: "Deidre Jaeger"
+date: "7/10/2019"
+output: html_document
+---
+
+```{r load librarys}
+library(dplyr)
+library(ggplot2)
+library(stringr)
+```
+
+
+```{r load the master reference csv}
+
+master <- read.csv("data/Master_references_CU.csv")
+
+```
+
+
+```{r load csv files for each marker}
+
+# from USDA
+CH01f02 <- read.csv("data/SSR-marker-alleles/CU_CH01f02_2019_7.1.19.csv")
+CH01H01 <- read.csv("data/SSR-marker-alleles/CU_CH01H01_2019.csv")
+GD142 <- read.csv("data/SSR-marker-alleles/CU_GD142_2019_7.1.19.csv")
+GD147 <- read.csv("data/SSR-marker-alleles/CU_GD147_2019_7.1.19.csv")
+GD12 <- read.csv("data/SSR-marker-alleles/CU_GD12_2019_7.1.19.csv") # need to update to the rescored one
+
+# chris scored
+CH02d08 <- read.csv("data/SSR-marker-alleles/CU_CH02d08_2019.csv")
+GD15 <- read.csv("data/SSR-marker-alleles/CU_GD15_2019.csv")
+GD96 <- read.csv("data/SSR-marker-alleles/CU_GD96_2019.csv")
+GD162 <- read.csv("data/SSR-marker-alleles/CU_GD162_2019.csv")
+
+```
+
+
+Alignment Plan
+1. create a data frame with all our references + the master references
+2. create a summary of how far off our our references were at each marker from the master references
+3. Develop the code for how much to add or subtract
+4. Apply this code to our data
+
+
+```{r create dataframe}
+
+# create a dataframe to store all the reference markers (both master and CU 2019)
+ref.apple <- data.frame("type" = c(rep("CU_2019", 90), rep("master", 1692)), "PI.name" = NA, "Final.Cultivar" = NA, "Synonym" = NA, "CH01f02.1" = NA, "CH01f02.2" = NA, "CH01h01.1" = NA, "CH01h01.2" = NA, "GD12.1" = NA, "GD12.2" = NA, "GD15.1" = NA, "GD15.2" = NA, "GD96.1" = NA ) 
+
+
+# populate the dataframe with CU2019 data
+# create dataframes with only the reference samples
+CH01f02.ref <- CH01f02 %>% 
+  filter(str_detect(Sample.Name,"^PI_") | str_detect(Sample.Name,"^UWY")) %>% 
+  mutate(Sample.Name = as.character(Sample.Name))
+
+ref.apple$PI.name[1:90] <- CH01f02.ref$Sample.Name[1:90]
+
+ref.apple <- ref.apple %>% 
+  inner_join()
+
+
+  
+  mutate(PI.name = CH01f02.ref$Sample.Name, CH01f02.1 = "Allele.1", CH01f02.2 = "Allele.2")
+
+
+
+
+filter()
+
+# new column for master and CU 2019 status
+# genes: Sample.Name , 
+# master: PI_. , Final.Cultivar, Synonym, CH0f02 onward
+# create new dataframe and add only the reference samples for allele 1 and 2
+# sort by sample name
+```
+
